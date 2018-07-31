@@ -16,7 +16,7 @@ Then the answer wil be **dp(length(a), length(b))**.
 
 Time complexity is **O(length(a) * length(b))**. 
 
-Unfortunately python solution was very slow and got TL running **> 6 sec** for large inputs. While C++ solution took only **50ms**. I wonder if there are more optmal solutions so that python version got accepted.
+Unfortunately python solution was very slow and got TL running **> 6 sec** for large inputs. While C++ solution took only **50ms**. I wonder if there exists more optimal solution, so that python version got accepted.
 
 # B. Teleport
 
@@ -56,3 +56,12 @@ Using all these optimizations running time on the largest test case was just **3
 
 # D. Fate lines
 
+In this task we are given a binary tree with **N** nodes. Each node has some number in it - positive or negative. We can delete at most **K** nodes (deleting node also deletes all its descendents). The task to maximize total sum of all numbers in the tree deleting some of nodes.
+
+Again, let's use dynamic programming. Let **dp(i, k)** - be the maximal sum we can obtain in subtree with root in **i**-th node deleting at most **k** nodes. Then the answer will be **dp(root, K)**.
+
+The recurrent rule:
+
+**dp(i, k)** = max{**dp(left, j)** + **dp(right, k-j)** + weight(i); 0 if k > 0} for j=0..k
+
+Time complexity is **O(N*K)**.
