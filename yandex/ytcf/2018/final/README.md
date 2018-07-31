@@ -8,6 +8,8 @@ We can use dynamic programming here. **dp(i, j)** - will store **true** if using
 
 Then recursive rule will be:
 
+**dp(0, 0)** = true
+
 **dp(i, j)** = (**dp(i-1, j)** if c[i+j-1] == a[i-1]) OR (**dp(i, j-1)** if c[i+j-1] == b[j-1])
 
 Then the answer wil be **dp(length(a), length(b))**.
