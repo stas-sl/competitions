@@ -50,7 +50,7 @@ Though if we will proceed with this approach as is we'll easily will run out of 
 1. We'll precalculate for each **(i, j)** maximal distance to the source cell that is it possible to obtain at all. Then during computation of **dp(i, j, d)** we'll check if **d** is greater that maximal possible distance we'll just return false.
 2. We'll cache all already calculated dp(i, j, d) to reuse the results if needed.
 
-Overal complexity is **O(N\*M\*M)**, where **N** - is number of layers and **M** - is number of cells in each layer.
+Overal complexity is **O(M^N)**, where **N** - is number of layers and **M** - is number of cells in each layer.
 
 Using all these optimizations running time on the largest test case was just **3ms**.
 
@@ -64,4 +64,4 @@ The recurrent rule:
 
 **dp(i, k)** = max{**dp(left, j)** + **dp(right, k-j)** + weight(i); 0 if k > 0} for j=0..k
 
-Time complexity is **O(N*K)**.
+Time complexity is **O(N*K*K)**.
