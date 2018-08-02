@@ -1,35 +1,41 @@
+from collections import deque
+
 n, k = map(int, input().split())
 
 nodes = {}
-no_parent = set(range(1, n + 1))
+is_child = [False] * (n + 1)
 for j in range(n):
     i, w, l, r = map(int, input().split())
     if l > 0:
-        no_parent.remove(l)
+        is_child[l] = True
     if r > 0:
-        no_parent.remove(r)
+        is_child[r] = True
     nodes[i] = dict(w=w, l=l, r=r)
 
-root = list(no_parent)[0]
-cache = {}
+root = is_child.index(False, 1)
 
+q = deque()
+q.append(root)
+order = []
 
-def dp(i, k):
-    if i == 0:
-        return 0
+while len(q) > 0:
+    x = q.popleft()
+    order.append(x)
+    node = nodes[x]
+    if node['l'] > 0:
+        q.append(node['l'])
+    if node['r'] > 0:
+        q.append(node['r'])
 
-    if (i, k) in cache:
-        return cache[(i, k)]
+dp = [[-10 ** 18] * (k + 1) for i in range(n + 1)]
+dp[0] = [0] * (k + 1)
+for i in reversed(order):
+    node = nodes[i]
+    for j in range(k + 1):
+        dp[i][j] = max(dp[node['l']][l] + dp[node['r']][j - l] for l in range(j + 1))
+        dp[i][j] += node['w']
 
-    n = nodes[i]
-    res = max(dp(n['l'], j) + dp(n['r'], k - j) for j in range(k + 1))
-    res += nodes[i]['w']
+        if j > 0:
+            dp[i][j] = max(0, dp[i][j])
 
-    if k > 0:
-        res = max(0, res)
-
-    cache[(i, k)] = res
-    return res
-
-
-print(dp(root, k))
+print(dp[root][k])

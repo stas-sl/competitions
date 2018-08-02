@@ -45,14 +45,15 @@ The recurrent rule will be:
 
 **dp(i, j, d)** = true if dp(i-1, k, d - distance(from k-th cell of i-1 layer to j-th cell of i-th layer)) is true for some k
 
-Though if we will proceed with this approach as is we'll easily will run out of time. Thus we wll use 2 optimizations:
+Though if we will proceed with this approach as is we'll easily will run out of time. Thus we need to clip some paths: we'll precalculate for each **(i, j)** maximal distance to the source cell that is it possible to obtain at all. Then during computation of **dp(i, j, d)** we'll check if **d** is greater that maximal possible distance we'll just return false.
 
-1. We'll precalculate for each **(i, j)** maximal distance to the source cell that is it possible to obtain at all. Then during computation of **dp(i, j, d)** we'll check if **d** is greater that maximal possible distance we'll just return false.
-2. We'll cache all already calculated dp(i, j, d) to reuse the results if needed.
+Overal complexity is **O(M^N)**, where **N** - is number of layers and **M** - is number of cells in each layer. Though this can become a really large number in worst case, probably because final tests were not that hard this solutions worked under **3ms** for each case.
 
-Overal complexity is **O(M^N)**, where **N** - is number of layers and **M** - is number of cells in each layer.
+Alternative (better) approach is known as **"meet in the middle"**, where we actually perform the same search but separatly for 2 halves of the graph and then merge the result. Namely we will start from the source cell in the bottom layer and collect all the distances that we can obtain from it to all cells in the middle layer. Then we'll perfrom the same procedure but staring from the target cell of the top layer and going from the top layer down to the middle layer. We'll end up with 2 sets of distances for each cell in the middle layer. Then we will just check for each cell in the middle layer if it is possible to find a pair of such distances that will sum to **D**. 
 
-Using all these optimizations running time on the largest test case was just **3ms**.
+The complexity in this case will be **O(N\*M\*M^(N/2)\*log M)**.
+
+Implementation details. My first implementation of this algorithm timed out because of slowness of `undordered_set`. When I replaced it with `vector,` though it might contain duplicates and needs sorting, it actually worked faster and the longest test took **259ms**. Unfortunately this algorithm run out of memory/time implemented in python using either `list` or `dict`.
 
 # D. Fate lines
 
@@ -64,4 +65,6 @@ The recurrent rule:
 
 **dp(i, k)** = max{**dp(left, j)** + **dp(right, k-j)** + weight(i); 0 if k > 0} for j=0..k
 
-Time complexity is **O(N*K*K)**.
+When implementing this rule we'd like to sort the nodes in such order that when calculating **dp** for the parent we already have calculated results for its children. We can do this by assigning an order to each node as we traverse the tree using BFS. Then if we reverse resulting order we'll get exacly what we need: childs before parent.
+
+Time complexity is **O(N*K^2)**.
